@@ -79,17 +79,17 @@ def compute_distance(imgp1,imgp2,num_images,K,rvecs,R):
     robj = (np.sum(rit,axis = 0)+np.sum(rvecs,axis = 0))/num_images
     return robj
 
-def matT(tvec):
+def matrixT(tvec):
     T = np.array([[0,-tvec[2],tvec[1]],
               [tvec[2],0,-tvec[0]],
               [-tvec[1],tvec[0],0]],dtype = np.float32)
     return T
 
-def computeEssentMatx(R,T):
+def computeEssentialMatrix(R,T):
     E = np.matmul(T,R)
     return E
 
-def computeFundMat(K,E):
+def computeFundamentalMatrix(K,E):
     matk_inv = np.linalg.inv(K)
     F = np.matmul(np.matmul(matk_inv.T,E),matk_inv)
     return F
