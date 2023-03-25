@@ -1,10 +1,8 @@
 import numpy as np
-import cv2 
-import glob
+import cv2
 import scipy as sc
 from scipy.linalg import lstsq
 from scipy.linalg import svd
-import matplotlib.pyplot as plt
 def compute_epipole(F):
     U, S, V = np.linalg.svd(F)
     e = V[-1, :]
