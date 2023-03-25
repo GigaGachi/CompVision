@@ -8,7 +8,6 @@ def compute_epipole(F):
     e = V[-1, :]
     e = e / e[2]
     return e
-
 def compute_matching_homographies(e2, Rot, K):
     h = K[0][2]
     w = K[1][2]
