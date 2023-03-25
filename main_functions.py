@@ -8,6 +8,7 @@ def compute_epipole(F):
     e = V[-1, :]
     e = e / e[2]
     return e
+
 def compute_matching_homographies(e2, Rot, K):
     h = K[0][2]
     w = K[1][2]
@@ -77,14 +78,17 @@ def compute_distance(imgp1,imgp2,num_images,K,rvecs,R):
     rit = [solves[i]*univec[i] for i in range(num_images)]  
     robj = (np.sum(rit,axis = 0)+np.sum(rvecs,axis = 0))/num_images
     return robj
+
 def matT(tvec):
     T = np.array([[0,-tvec[2],tvec[1]],
               [tvec[2],0,-tvec[0]],
               [-tvec[1],tvec[0],0]],dtype = np.float32)
     return T
+
 def computeEssentMatx(R,T):
     E = np.matmul(T,R)
     return E
+
 def computeFundMat(K,E):
     matk_inv = np.linalg.inv(K)
     F = np.matmul(np.matmul(matk_inv.T,E),matk_inv)
