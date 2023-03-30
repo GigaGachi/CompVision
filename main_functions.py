@@ -156,10 +156,10 @@ def SGBM_trackbar(img1,img2):
     if cv2.waitKey(1) == 32:
       return
 def image_index_tresholder(img,indices):
-    img1 = cv2.filter2D(img,0,[0])
-    indices1 = np.uint8(indices)
+    #Возвращает облако точек по массиву 
+    img1 = cv2.filter2D(img,0,np.array([0]))
     for i in indices:
-        img1[indices[0],indices[1]] = 100
+        img1[int(i[1])-2:int(i[1])+1,int(i[0])-2:int(i[0])+1] = 255*np.ones(np.shape(img1[int(i[1])-2:int(i[1])+1,int(i[0])-2:int(i[0])+1]))
     return img1
 
 def show_image(img):
