@@ -161,4 +161,10 @@ def image_index_tresholder(img,indices):
     for i in indices:
         img1[indices[0],indices[1]] = 100
     return img1
-        
+
+def show_image(img):
+    cv2.namedWindow("image",flags = cv2.WND_PROP_FULLSCREEN)
+    cv2.imshow('image', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return
