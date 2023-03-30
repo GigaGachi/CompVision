@@ -155,3 +155,10 @@ def SGBM_trackbar(img1,img2):
  
     if cv2.waitKey(1) == 32:
       return
+def image_index_tresholder(img,indices):
+    img1 = cv2.filter2D(img,0,[0])
+    indices1 = np.uint8(indices)
+    for i in indices:
+        img1[indices[0],indices[1]] = 100
+    return img1
+        
