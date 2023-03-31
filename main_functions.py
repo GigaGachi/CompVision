@@ -103,15 +103,14 @@ def computeFundamentalMatrix(K,E):
     matk_inv = np.linalg.inv(K)
     F = np.matmul(np.matmul(matk_inv.T,E),matk_inv)
     return F
+
 def nothing(x):
     pass
+
 def SGBM_trackbar(img1,img2):
     #Создает интерактивный интерфейс, позволяет изменять параметры мэтчинга и отслеживать карту глубины
-    
- 
     cv2.namedWindow('disp',cv2.WND_PROP_FULLSCREEN)
-    cv2.resizeWindow('disp',200,100)
- 
+    cv2.resizeWindow('disp',200,200)
     cv2.createTrackbar('numDisparities','disp',1,17,nothing)
     cv2.createTrackbar('blockSize','disp',5,50,nothing)
     cv2.createTrackbar('preFilterType','disp',1,1,nothing)
@@ -126,41 +125,64 @@ def SGBM_trackbar(img1,img2):
  
     stereo = cv2.StereoSGBM_create()
 
-    numDisparities = cv2.getTrackbarPos('numDisparities','disp')*16
-    blockSize = cv2.getTrackbarPos('blockSize','disp')*2 + 5
-    preFilterCap = cv2.getTrackbarPos('preFilterCap','disp')
-    uniquenessRatio = cv2.getTrackbarPos('uniquenessRatio','disp')
-    speckleRange = cv2.getTrackbarPos('speckleRange','disp')
-    speckleWindowSize = cv2.getTrackbarPos('speckleWindowSize','disp')*2
-    disp12MaxDiff = cv2.getTrackbarPos('disp12MaxDiff','disp')
-    minDisparity = cv2.getTrackbarPos('minDisparity','disp')
+    while True:
+        numDisparities = cv2.getTrackbarPos('numDisparities','disp')*16
+        blockSize = cv2.getTrackbarPos('blockSize','disp')*2 + 5
+        preFilterCap = cv2.getTrackbarPos('preFilterCap','disp')
+        uniquenessRatio = cv2.getTrackbarPos('uniquenessRatio','disp')
+        speckleRange = cv2.getTrackbarPos('speckleRange','disp')
+        speckleWindowSize = cv2.getTrackbarPos('speckleWindowSize','disp')*2
+        disp12MaxDiff = cv2.getTrackbarPos('disp12MaxDiff','disp')
+        minDisparity = cv2.getTrackbarPos('minDisparity','disp')
 
-    stereo.setNumDisparities(numDisparities)
-    stereo.setBlockSize(blockSize)
-    stereo.setPreFilterCap(preFilterCap)
-    stereo.setUniquenessRatio(uniquenessRatio)
-    stereo.setSpeckleRange(speckleRange)
-    stereo.setSpeckleWindowSize(speckleWindowSize)
-    stereo.setDisp12MaxDiff(disp12MaxDiff)
-    stereo.setMinDisparity(minDisparity)
+        stereo.setNumDisparities(numDisparities)
+        stereo.setBlockSize(blockSize)
+        stereo.setPreFilterCap(preFilterCap)
+        stereo.setUniquenessRatio(uniquenessRatio)
+        stereo.setSpeckleRange(speckleRange)
+        stereo.setSpeckleWindowSize(speckleWindowSize)
+        stereo.setDisp12MaxDiff(disp12MaxDiff)
+        stereo.setMinDisparity(minDisparity)
  
  
-    disparity = stereo.compute(img1,img2)
+        disparity = stereo.compute(img1,img2)
  
-    disparity = disparity.astype(np.float32)
+        disparity = disparity.astype(np.float32)
  
-    disparity = (disparity/16.0 - minDisparity)/numDisparities
+        disparity = (disparity/16.0 - minDisparity)/numDisparities
  
-    cv2.imshow("disp",disparity)
- 
-    if cv2.waitKey(1) == 32:
-      return
+        cv2.imshow("disp",disparity)
+        if cv2.waitKey(1) == 32:
+            cv2.destroyAllWindows()
+            print("numDisparities:",numDisparities)
+            print("blockSize:",blockSize)
+            print("preFilterCap:",preFilterCap)
+            print("uniquenessRatio:",uniquenessRatio)
+            print("speckleRange:",speckleRange)
+            print("speckleWindowSize:",speckleWindowSize)
+            print("disp12MaxDiff:",blockSize)
+            print("blockSize:",blockSize)
+            print("minDisparity",minDisparity)
+            return disparity
+        
 def image_index_tresholder(img,indices):
     #Возвращает облако точек по массиву 
     img1 = cv2.filter2D(img,0,np.array([0]))
     for i in indices:
         img1[int(i[1])-2:int(i[1])+1,int(i[0])-2:int(i[0])+1] = 255*np.ones(np.shape(img1[int(i[1])-2:int(i[1])+1,int(i[0])-2:int(i[0])+1]))
     return img1
+
+def image_index_depth(img,indices):
+    #Дополняет массив точек координатой глубины по карте глубины
+    mass = []
+    for i in indices:
+        mass.append(img[int(i[1])][int(i[0])])
+    mass = np.array(mass).reshape((-1,1))
+    print(mass)
+    mass = np.append(indices,mass,axis = 1)
+    return mass
+
+    
 
 def show_image(img):
     cv2.namedWindow("image",flags = cv2.WND_PROP_FULLSCREEN)
