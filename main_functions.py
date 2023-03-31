@@ -178,7 +178,6 @@ def image_index_depth(img,indices):
     for i in indices:
         mass.append(img[int(i[1])][int(i[0])])
     mass = np.array(mass).reshape((-1,1))
-    print(mass)
     mass = np.append(indices,mass,axis = 1)
     return mass
 
