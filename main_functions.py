@@ -3,6 +3,7 @@ import cv2
 import scipy as sc
 from scipy.linalg import lstsq
 from scipy.linalg import svd
+import math 
 def compute_epipole(F):
     #Принимает фундаментальную матрицу стереосистемы, возвращает эпиполюс
     U, S, V = np.linalg.svd(F)
@@ -112,7 +113,7 @@ def SGBM_trackbar(img1,img2):
     cv2.namedWindow('disp',cv2.WND_PROP_FULLSCREEN)
     cv2.resizeWindow('disp',200,200)
     cv2.createTrackbar('numDisparities','disp',1,17,nothing)
-    cv2.createTrackbar('blockSize','disp',5,50,nothing)
+    cv2.createTrackbar('blockSize','disp',5,15,nothing)
     cv2.createTrackbar('preFilterType','disp',1,1,nothing)
     cv2.createTrackbar('preFilterSize','disp',2,25,nothing)
     cv2.createTrackbar('preFilterCap','disp',5 ,62,nothing)
@@ -175,8 +176,9 @@ def image_index_tresholder(img,indices):
 def image_index_depth(img,indices):
     #Дополняет массив точек координатой глубины по карте глубины
     mass = []
+    average = np.average(img)
     for i in indices:
-        mass.append(img[int(i[1])][int(i[0])])
+        mass.append(math.exp((img[int(i[1])][int(i[0])]-average)**2))
     mass = np.array(mass).reshape((-1,1))
     mass = np.append(indices,mass,axis = 1)
     return mass
